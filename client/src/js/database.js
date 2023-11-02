@@ -1,58 +1,57 @@
-import { openDB } from 'idb';
+import { openDB } from "idb";
 
 const initdb = async () =>
-  openDB('jate', 1, {
+  openDB("jate", 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains('jate')) {
-        console.log('jate database already exists');
+      if (db.objectStoreNames.contains("jate")) {
+        console.log("jate database already exists");
         return;
       }
-      db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
-      console.log('jate database created');
+      db.createObjectStore("jate", { keyPath: "id", autoIncrement: true });
+      console.log("jate database created");
     },
   });
 
-// TODO: Add logic to a method that accepts some content and adds it to the database
-export const putDb = async (content) => 
-{console.error('putDb not implemented');
+// This logic and method accepts some content and adds it to the database
+export const putDb = async (content) => {
+  console.log("Update the database");
 
-//create connection to db and versin
-const textDb = await openDB("jate", 1);
+  // Creates a connection to the database and version we want to use
+  const textDb = await openDB("jate", 1);
 
-//Create new transaction 
-const tx = textDb.transaction("jate", "readwrite");
+  // Creates a new transaction and specify the database and data privileges
+  const tx = textDb.transaction("jate", "readwrite");
 
-//Opens desired object store
-const store = tx.objectStore("jate");
+  // Opens up the desired object store
+  const store = tx.objectStore("jate");
 
-//put method to store
-const request = store.put({ id: 1, value: content});
+  // The .put() method is used on the store and content passed in
+  const request = store.put({ id: 1, value: content });
 
-//confirm request
-const result = await request;
-console.log("data saved to db", result)
+  // Confirmation of the request
+  const result = await request;
+  console.log(" saved to the database", result);
 };
+// This logic and method gets all the content from the database
+export const getDb = async () => {
+  console.log("GET from the database");
 
-//get content from db
-export const getDB = async() => {
-  console.log("det data from database");
+  // Creates a connection to the database and version we want to use
+  const textDb = await openDB("jate", 1);
 
+  // Creates a new transaction and specify the database and data privileges
+  const tx = textDb.transaction("jate", "readonly");
 
-//create connection to db and version
-const textDb = await openDB("jate", 1);
+  // Opens up the desired object store
+  const store = tx.objectStore("jate");
 
-//create transaction 
-const tx = textDb.transaction("jate", "readonly");
+  // The .get() method is used on the store to grab stored data
+  const request = store.get(1);
 
-//open up desired store
-const store = tx.objectStore("jate");
-
-const request = store.get(1);
-
-//confirm the request
-const result = await request;
-console.log("request.value", result)
-return result?.value
+  // Confirmation of the request
+  const result = await request;
+  console.log("result.value", result);
+  return result?.value;
 };
 
 initdb();
